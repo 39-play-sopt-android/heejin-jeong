@@ -1,6 +1,6 @@
 <img align="right" width="200" alt="먼작귀들" src="https://github.com/user-attachments/assets/0675edf1-c0fd-48ed-a70c-f6b923512cf0">
 
-### 먼가 작고 귀여운 안드로이드 생존기 🐾
+## 먼가 작고 귀여운 안드로이드 생존기 🐾
 ### 정희진
 
 ### 🎒 소지품
