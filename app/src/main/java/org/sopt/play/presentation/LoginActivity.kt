@@ -1,0 +1,168 @@
+package org.sopt.play.presentation
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Patterns
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import org.sopt.play.MainActivity
+import org.sopt.play.ui.component.PlayButton
+import org.sopt.play.ui.component.PlayTextField
+import org.sopt.play.ui.theme.PlayColors
+import org.sopt.play.ui.theme.PlaySoptTheme
+import org.sopt.play.ui.theme.PlayType
+
+class LoginActivity : ComponentActivity() {
+    private var registeredEmail: String? = null
+    private var registeredPassword: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        val registerLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                registeredEmail = result.data?.getStringExtra(RegisterActivity.EXTRA_EMAIL)
+                registeredPassword = result.data?.getStringExtra(RegisterActivity.EXTRA_PASSWORD)
+            }
+        }
+
+        setContent {
+            PlaySoptTheme {
+                LoginScreen(
+                    onRegisterClick = {
+                        registerLauncher.launch(Intent(this, RegisterActivity::class.java))
+                    },
+                    onLoginClick = { email, password ->
+                        if (email == registeredEmail && password == registeredPassword) {
+                            startActivity(
+                                Intent(this, MainActivity::class.java).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
+                            )
+                        } else {
+                            Toast.makeText(
+                                this,
+                                "이메일 또는 비밀번호가 올바르지 않아요.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
+fun isValidEmail(email: String): Boolean =
+    email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+@Composable
+fun LoginScreen(
+    onRegisterClick: () -> Unit,
+    onLoginClick: (String, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val emailState = rememberTextFieldState()
+    val passwordState = rememberTextFieldState()
+    val email = emailState.text.toString()
+    val password = passwordState.text.toString()
+    val emailError = if (email.isNotEmpty() && !isValidEmail(email)) {
+        "올바른 이메일을 입력해주세요."
+    } else null
+    val passwordError = if (password.isNotEmpty() && password.length < 6) {
+        "비밀번호는 6자 이상 입력해주세요."
+    } else null
+    val canLogin = isValidEmail(email) && password.length >= 6
+
+    CompositionLocalProvider(LocalRippleConfiguration provides null) {
+        Scaffold(modifier = modifier, containerColor = PlayColors.White) { innerPadding ->
+            Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(PlayColors.White)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+            Spacer(modifier = Modifier.height(62.dp))
+            Text(
+                text = "이메일로 로그인하기",
+                modifier = Modifier.fillMaxWidth(),
+                color = PlayColors.Black,
+                style = PlayType.b28
+            )
+            Spacer(modifier = Modifier.height(45.dp))
+            PlayTextField(
+                title = "이메일 주소",
+                state = emailState,
+                placeholder = "abc@email.com",
+                errorMessage = emailError,
+                keyboardType = KeyboardType.Email
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+            PlayTextField(
+                title = "비밀번호",
+                state = passwordState,
+                placeholder = "6자 이상의 비밀번호",
+                errorMessage = passwordError,
+                isPassword = true,
+                imeAction = ImeAction.Done
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+            PlayButton(
+                text = "로그인",
+                onClick = { onLoginClick(email, password) },
+                enabled = canLogin
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("아직 계정이 없으신가요?", color = PlayColors.Gray3, style = PlayType.m14)
+                TextButton(onClick = onRegisterClick, contentPadding = PaddingValues(4.dp)) {
+                    Text("회원가입하기", color = PlayColors.Black, style = PlayType.sb14)
+                }
+            }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 780)
+@Composable
+private fun LoginScreenPreview() {
+    PlaySoptTheme {
+        LoginScreen(
+            onRegisterClick = {},
+            onLoginClick = { _, _ -> }
+        )
+    }
+}

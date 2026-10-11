@@ -1,4 +1,4 @@
-package org.sopt.play.week1
+package org.sopt.play.presentation
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,12 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalRippleConfiguration
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +26,16 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.sopt.play.ui.component.PlayButton
+import org.sopt.play.ui.component.PlayTextField
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
+import org.sopt.play.ui.theme.PlayType
 
 class RegisterActivity : ComponentActivity() {
     companion object {
-        const val EXTRA_EMAIL = "org.sopt.play.week1.EMAIL"
-        const val EXTRA_PASSWORD = "org.sopt.play.week1.PASSWORD"
+        const val EXTRA_EMAIL = "org.sopt.play.presentation.EMAIL"
+        const val EXTRA_PASSWORD = "org.sopt.play.presentation.PASSWORD"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,20 +43,23 @@ class RegisterActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PlaySoptTheme {
-                RegisterScreen { email, password ->
+                RegisterScreen(onRegisterClick = { email, password ->
                     val result = Intent()
                         .putExtra(EXTRA_EMAIL, email)
                         .putExtra(EXTRA_PASSWORD, password)
                     setResult(RESULT_OK, result)
                     finish()
-                }
+                })
             }
         }
     }
 }
 
 @Composable
-fun RegisterScreen(onRegisterClick: (String, String) -> Unit) {
+fun RegisterScreen(
+    onRegisterClick: (String, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val nameState = rememberTextFieldState()
     val emailState = rememberTextFieldState()
     val passwordState = rememberTextFieldState()
@@ -81,7 +83,7 @@ fun RegisterScreen(onRegisterClick: (String, String) -> Unit) {
         passwordConfirm == password
 
     CompositionLocalProvider(LocalRippleConfiguration provides null) {
-        Scaffold(containerColor = PlayColors.White) { innerPadding ->
+        Scaffold(modifier = modifier, containerColor = PlayColors.White) { innerPadding ->
             Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -96,16 +98,16 @@ fun RegisterScreen(onRegisterClick: (String, String) -> Unit) {
                 text = "이메일로 회원가입",
                 modifier = Modifier.fillMaxWidth(),
                 color = PlayColors.Black,
-                style = MaterialTheme.typography.headlineSmall
+                style = PlayType.b28
             )
             Spacer(modifier = Modifier.height(45.dp))
-            Week1TextField(
+            PlayTextField(
                 title = "이름",
                 state = nameState,
                 placeholder = "홍길동"
             )
             Spacer(modifier = Modifier.height(38.dp))
-            Week1TextField(
+            PlayTextField(
                 title = "이메일 주소",
                 state = emailState,
                 placeholder = "abc@email.com",
@@ -113,7 +115,7 @@ fun RegisterScreen(onRegisterClick: (String, String) -> Unit) {
                 keyboardType = KeyboardType.Email
             )
             Spacer(modifier = Modifier.height(38.dp))
-            Week1TextField(
+            PlayTextField(
                 title = "비밀번호",
                 state = passwordState,
                 placeholder = "6자 이상의 비밀번호",
@@ -121,7 +123,7 @@ fun RegisterScreen(onRegisterClick: (String, String) -> Unit) {
                 isPassword = true
             )
             Spacer(modifier = Modifier.height(38.dp))
-            Week1TextField(
+            PlayTextField(
                 title = "비밀번호 확인",
                 state = passwordConfirmState,
                 placeholder = "6자 이상의 비밀번호",
@@ -130,20 +132,11 @@ fun RegisterScreen(onRegisterClick: (String, String) -> Unit) {
                 imeAction = ImeAction.Done
             )
             Spacer(modifier = Modifier.height(40.dp))
-            Button(
+            PlayButton(
+                text = "회원가입",
                 onClick = { onRegisterClick(email, password) },
-                enabled = canRegister,
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PlayColors.Black,
-                    contentColor = PlayColors.White,
-                    disabledContainerColor = PlayColors.Gray1,
-                    disabledContentColor = PlayColors.Gray3
-                )
-            ) {
-                Text("회원가입", style = MaterialTheme.typography.labelMedium)
-            }
+                enabled = canRegister
+            )
             }
         }
     }

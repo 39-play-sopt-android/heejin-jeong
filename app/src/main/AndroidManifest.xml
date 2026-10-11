@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlaySopt">
         <activity
-            android:name=".week1.RegisterActivity"
+            android:name=".presentation.RegisterActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".week1.LoginActivity"
+            android:name=".presentation.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
