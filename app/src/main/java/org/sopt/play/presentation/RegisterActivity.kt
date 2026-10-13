@@ -6,20 +6,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.LocalRippleConfiguration
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -72,90 +70,96 @@ fun RegisterScreen(
     val passwordConfirm = passwordConfirmState.text.toString()
     val emailError = if (email.isNotEmpty() && !isValidEmail(email)) {
         "올바른 이메일을 입력해주세요."
-    } else null
+    } else {
+        null
+    }
     val passwordError = if (password.isNotEmpty() && password.length < 6) {
         "비밀번호는 6자 이상 입력해주세요."
-    } else null
+    } else {
+        null
+    }
     val confirmError = if (passwordConfirm.isNotEmpty() && passwordConfirm != password) {
         "비밀번호와 동일하게 입력해주세요."
-    } else null
+    } else {
+        null
+    }
     val canRegister = name.isNotBlank() && isValidEmail(email) &&
         password.length >= 6 &&
         passwordConfirm.isNotEmpty() &&
         passwordConfirm == password
 
-    CompositionLocalProvider(LocalRippleConfiguration provides null) {
-        Scaffold(modifier = modifier, containerColor = PlayColors.White) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-                    .background(PlayColors.White)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(74.dp))
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(PlayColors.White)
+            .safeDrawingPadding()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(60.dp))
 
-                Text(
-                    text = "이메일로 회원가입",
-                    modifier = Modifier.fillMaxWidth(),
-                    color = PlayColors.Black,
-                    style = PlayType.b28
-                )
+        Text(
+            text = "이메일로 회원가입",
+            modifier = Modifier.fillMaxWidth(),
+            color = PlayColors.Black,
+            style = PlayType.b28
+        )
 
-                Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-                PlayTextField(
-                    title = "이름",
-                    state = nameState,
-                    placeholder = "홍길동"
-                )
+        PlayTextField(
+            title = "이름",
+            state = nameState,
+            placeholder = "홍길동"
+        )
 
-                Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-                PlayTextField(
-                    title = "이메일 주소",
-                    state = emailState,
-                    placeholder = "abc@email.com",
-                    errorMessage = emailError,
-                    keyboardType = KeyboardType.Email
-                )
+        PlayTextField(
+            title = "이메일 주소",
+            state = emailState,
+            placeholder = "abc@email.com",
+            errorMessage = emailError,
+            keyboardType = KeyboardType.Email
+        )
 
-                Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-                PlayTextField(
-                    title = "비밀번호",
-                    state = passwordState,
-                    placeholder = "6자 이상의 비밀번호",
-                    errorMessage = passwordError,
-                    isPassword = true
-                )
+        PlayTextField(
+            title = "비밀번호",
+            state = passwordState,
+            placeholder = "6자 이상의 비밀번호",
+            errorMessage = passwordError,
+            isPassword = true
+        )
 
-                Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-                PlayTextField(
-                    title = "비밀번호 확인",
-                    state = passwordConfirmState,
-                    placeholder = "6자 이상의 비밀번호",
-                    errorMessage = confirmError,
-                    isPassword = true,
-                    imeAction = ImeAction.Done
-                )
+        PlayTextField(
+            title = "비밀번호 확인",
+            state = passwordConfirmState,
+            placeholder = "6자 이상의 비밀번호",
+            errorMessage = confirmError,
+            isPassword = true,
+            imeAction = ImeAction.Done
+        )
 
-                Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-                PlayButton(
-                    text = "회원가입",
-                    onClick = { onRegisterClick(email, password) },
-                    enabled = canRegister
-                )
-            }
-        }
+        PlayButton(
+            text = "회원가입",
+            onClick = { onRegisterClick(email, password) },
+            enabled = canRegister
+        )
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 780)
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 780
+)
 @Composable
 private fun RegisterScreenPreview() {
     PlaySoptTheme {

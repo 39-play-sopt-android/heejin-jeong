@@ -20,16 +20,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicSecureTextField
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldDecorator
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.TextFieldDecorator
 import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
@@ -156,7 +156,9 @@ fun PlayTextField(
             BasicTextField(
                 state = state,
                 modifier = fieldModifier,
-                textStyle = PlayType.m18.copy(color = PlayColors.Gray5),
+                textStyle = PlayType.m18.copy(
+                    color = if (errorMessage != null) PlayColors.Gray6 else PlayColors.Gray5
+                ),
                 keyboardOptions = keyboardOptions,
                 onKeyboardAction = { onKeyboardAction() },
                 lineLimits = TextFieldLineLimits.SingleLine,
@@ -165,6 +167,7 @@ fun PlayTextField(
                 decorator = decorator
             )
         }
+
         AnimatedContent(
             targetState = errorMessage,
             transitionSpec = {
@@ -175,7 +178,10 @@ fun PlayTextField(
             if (message != null) {
                 Text(
                     text = message,
-                    modifier = Modifier.padding(start = 8.dp, top = 6.dp),
+                    modifier = Modifier.padding(
+                        start = 8.dp,
+                        top = 6.dp
+                    ),
                     color = PlayColors.Red,
                     style = PlayType.m14
                 )

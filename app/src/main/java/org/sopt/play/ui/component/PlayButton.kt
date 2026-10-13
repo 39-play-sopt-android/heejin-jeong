@@ -32,6 +32,8 @@ fun PlayButton(
             .clip(RoundedCornerShape(100.dp))
             .background(backgroundColor)
             .clickable(
+                interactionSource = null,
+                indication = null,
                 enabled = enabled,
                 role = Role.Button,
                 onClick = onClick
