@@ -13,7 +13,6 @@ private val PlayColorScheme = lightColorScheme(
 fun PlaySoptTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = PlayColorScheme,
-        typography = Typography,
         content = content
     )
 }

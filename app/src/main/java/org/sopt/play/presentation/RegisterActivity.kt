@@ -43,13 +43,15 @@ class RegisterActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PlaySoptTheme {
-                RegisterScreen(onRegisterClick = { email, password ->
-                    val result = Intent()
-                        .putExtra(EXTRA_EMAIL, email)
-                        .putExtra(EXTRA_PASSWORD, password)
-                    setResult(RESULT_OK, result)
-                    finish()
-                })
+                RegisterScreen(
+                    onRegisterClick = { email, password ->
+                        val result = Intent()
+                            .putExtra(EXTRA_EMAIL, email)
+                            .putExtra(EXTRA_PASSWORD, password)
+                        setResult(RESULT_OK, result)
+                        finish()
+                    }
+                )
             }
         }
     }
@@ -85,58 +87,69 @@ fun RegisterScreen(
     CompositionLocalProvider(LocalRippleConfiguration provides null) {
         Scaffold(modifier = modifier, containerColor = PlayColors.White) { innerPadding ->
             Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(PlayColors.White)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .background(PlayColors.White)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-            Spacer(modifier = Modifier.height(74.dp))
-            Text(
-                text = "이메일로 회원가입",
-                modifier = Modifier.fillMaxWidth(),
-                color = PlayColors.Black,
-                style = PlayType.b28
-            )
-            Spacer(modifier = Modifier.height(45.dp))
-            PlayTextField(
-                title = "이름",
-                state = nameState,
-                placeholder = "홍길동"
-            )
-            Spacer(modifier = Modifier.height(38.dp))
-            PlayTextField(
-                title = "이메일 주소",
-                state = emailState,
-                placeholder = "abc@email.com",
-                errorMessage = emailError,
-                keyboardType = KeyboardType.Email
-            )
-            Spacer(modifier = Modifier.height(38.dp))
-            PlayTextField(
-                title = "비밀번호",
-                state = passwordState,
-                placeholder = "6자 이상의 비밀번호",
-                errorMessage = passwordError,
-                isPassword = true
-            )
-            Spacer(modifier = Modifier.height(38.dp))
-            PlayTextField(
-                title = "비밀번호 확인",
-                state = passwordConfirmState,
-                placeholder = "6자 이상의 비밀번호",
-                errorMessage = confirmError,
-                isPassword = true,
-                imeAction = ImeAction.Done
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-            PlayButton(
-                text = "회원가입",
-                onClick = { onRegisterClick(email, password) },
-                enabled = canRegister
-            )
+                Spacer(modifier = Modifier.height(74.dp))
+
+                Text(
+                    text = "이메일로 회원가입",
+                    modifier = Modifier.fillMaxWidth(),
+                    color = PlayColors.Black,
+                    style = PlayType.b28
+                )
+
+                Spacer(modifier = Modifier.height(45.dp))
+
+                PlayTextField(
+                    title = "이름",
+                    state = nameState,
+                    placeholder = "홍길동"
+                )
+
+                Spacer(modifier = Modifier.height(38.dp))
+
+                PlayTextField(
+                    title = "이메일 주소",
+                    state = emailState,
+                    placeholder = "abc@email.com",
+                    errorMessage = emailError,
+                    keyboardType = KeyboardType.Email
+                )
+
+                Spacer(modifier = Modifier.height(38.dp))
+
+                PlayTextField(
+                    title = "비밀번호",
+                    state = passwordState,
+                    placeholder = "6자 이상의 비밀번호",
+                    errorMessage = passwordError,
+                    isPassword = true
+                )
+
+                Spacer(modifier = Modifier.height(38.dp))
+
+                PlayTextField(
+                    title = "비밀번호 확인",
+                    state = passwordConfirmState,
+                    placeholder = "6자 이상의 비밀번호",
+                    errorMessage = confirmError,
+                    isPassword = true,
+                    imeAction = ImeAction.Done
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                PlayButton(
+                    text = "회원가입",
+                    onClick = { onRegisterClick(email, password) },
+                    enabled = canRegister
+                )
             }
         }
     }
@@ -146,6 +159,8 @@ fun RegisterScreen(
 @Composable
 private fun RegisterScreenPreview() {
     PlaySoptTheme {
-        RegisterScreen(onRegisterClick = { _, _ -> })
+        RegisterScreen(
+            onRegisterClick = { _, _ -> }
+        )
     }
 }

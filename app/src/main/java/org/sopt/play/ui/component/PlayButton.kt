@@ -1,13 +1,17 @@
 package org.sopt.play.ui.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlayType
@@ -19,18 +23,26 @@ fun PlayButton(
     enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = modifier.fillMaxWidth().height(50.dp),
-        shape = RoundedCornerShape(50),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = PlayColors.Black,
-            contentColor = PlayColors.White,
-            disabledContainerColor = PlayColors.Gray1,
-            disabledContentColor = PlayColors.Gray3
-        )
+    val backgroundColor = if (enabled) PlayColors.Black else PlayColors.Gray1
+    val textColor = if (enabled) PlayColors.Gray1 else PlayColors.Gray3
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(100.dp))
+            .background(backgroundColor)
+            .clickable(
+                enabled = enabled,
+                role = Role.Button,
+                onClick = onClick
+            )
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Text(text, style = PlayType.sb14)
+        Text(
+            text = text,
+            style = PlayType.sb14,
+            color = textColor
+        )
     }
 }
