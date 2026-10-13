@@ -104,7 +104,7 @@ fun RegisterScreen(
                     style = PlayType.b28
                 )
 
-                Spacer(modifier = Modifier.height(45.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 PlayTextField(
                     title = "이름",
@@ -112,7 +112,7 @@ fun RegisterScreen(
                     placeholder = "홍길동"
                 )
 
-                Spacer(modifier = Modifier.height(38.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 PlayTextField(
                     title = "이메일 주소",
@@ -122,7 +122,7 @@ fun RegisterScreen(
                     keyboardType = KeyboardType.Email
                 )
 
-                Spacer(modifier = Modifier.height(38.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 PlayTextField(
                     title = "비밀번호",
@@ -132,7 +132,7 @@ fun RegisterScreen(
                     isPassword = true
                 )
 
-                Spacer(modifier = Modifier.height(38.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 PlayTextField(
                     title = "비밀번호 확인",

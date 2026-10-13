@@ -6,28 +6,32 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.focusable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicSecureTextField
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.TextFieldDecorator
 import androidx.compose.foundation.text.input.TextObfuscationMode
-import androidx.compose.material3.OutlinedSecureTextField
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -35,6 +39,9 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -54,70 +61,108 @@ fun PlayTextField(
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val doneFocusRequester = remember { FocusRequester() }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val shape = RoundedCornerShape(12.dp)
+    val borderColor = when {
+        errorMessage != null -> PlayColors.Red
+        isFocused -> PlayColors.Gray5
+        else -> PlayColors.Gray2
+    }
+    val cursorBrush = SolidColor(
+        if (errorMessage != null) PlayColors.Red else PlayColors.Gray5
+    )
     val keyboardOptions = KeyboardOptions(
         keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
         imeAction = imeAction
     )
     val onKeyboardAction = {
         if (imeAction == ImeAction.Done) {
-            doneFocusRequester.requestFocus()
+            focusManager.clearFocus(force = true)
             keyboardController?.hide()
         } else {
             focusManager.moveFocus(FocusDirection.Next)
         }
     }
-    val fieldModifier = Modifier.fillMaxWidth().then(
-        if (imeAction == ImeAction.Done) {
-            Modifier.onPreviewKeyEvent { event ->
-                if (event.key == Key.Enter) {
-                    if (event.type == KeyEventType.KeyDown) onKeyboardAction()
-                    true
-                } else false
+    val fieldModifier = Modifier
+        .fillMaxWidth()
+        .semantics {
+            contentDescription = title
+            if (errorMessage != null) {
+                error(errorMessage)
             }
-        } else Modifier
-    )
-    val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = PlayColors.Gray5,
-        unfocusedBorderColor = PlayColors.Gray2,
-        errorBorderColor = PlayColors.Red,
-        cursorColor = PlayColors.Gray5,
-        errorCursorColor = PlayColors.Red,
-        focusedContainerColor = PlayColors.White,
-        unfocusedContainerColor = PlayColors.White,
-        errorContainerColor = PlayColors.White
-    )
+        }
+        .onPreviewKeyEvent { event ->
+            if (imeAction == ImeAction.Done && event.key == Key.Enter) {
+                if (event.type == KeyEventType.KeyDown) {
+                    onKeyboardAction()
+                }
+                true
+            } else {
+                false
+            }
+        }
+    val decorator = TextFieldDecorator { innerTextField ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = PlayColors.White,
+                    shape = shape
+                )
+                .border(
+                    width = 2.dp,
+                    color = borderColor,
+                    shape = shape
+                )
+                .padding(16.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            if (state.text.isEmpty()) {
+                Text(
+                    text = placeholder,
+                    color = PlayColors.Gray2,
+                    style = PlayType.m18,
+                    maxLines = 1
+                )
+            }
+            innerTextField()
+        }
+    }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        Text(text = title, color = PlayColors.Black, style = PlayType.sb16)
+        Text(
+            text = title,
+            modifier = Modifier.padding(start = 8.dp),
+            color = PlayColors.Gray6,
+            style = PlayType.sb16
+        )
 
         Spacer(modifier = Modifier.height(6.dp))
 
         if (isPassword) {
-            OutlinedSecureTextField(
+            BasicSecureTextField(
                 state = state,
                 modifier = fieldModifier,
-                placeholder = { Text(placeholder, color = PlayColors.Gray2, style = PlayType.m18) },
-                textStyle = PlayType.m18.copy(color = PlayColors.Black),
-                isError = errorMessage != null,
+                textStyle = PlayType.m18.copy(color = PlayColors.Gray6),
                 textObfuscationMode = TextObfuscationMode.Hidden,
                 keyboardOptions = keyboardOptions,
                 onKeyboardAction = { onKeyboardAction() },
-                shape = RoundedCornerShape(10.dp),
-                colors = fieldColors
+                interactionSource = interactionSource,
+                cursorBrush = cursorBrush,
+                decorator = decorator
             )
         } else {
-            OutlinedTextField(
+            BasicTextField(
                 state = state,
                 modifier = fieldModifier,
-                placeholder = { Text(placeholder, color = PlayColors.Gray2, style = PlayType.m18) },
-                textStyle = PlayType.m18.copy(color = PlayColors.Black),
-                isError = errorMessage != null,
+                textStyle = PlayType.m18.copy(color = PlayColors.Gray5),
                 keyboardOptions = keyboardOptions,
                 onKeyboardAction = { onKeyboardAction() },
                 lineLimits = TextFieldLineLimits.SingleLine,
-                shape = RoundedCornerShape(10.dp),
-                colors = fieldColors
+                interactionSource = interactionSource,
+                cursorBrush = cursorBrush,
+                decorator = decorator
             )
         }
         AnimatedContent(
@@ -126,18 +171,15 @@ fun PlayTextField(
                 (expandVertically() + fadeIn()).togetherWith(shrinkVertically() + fadeOut())
             },
             label = "입력 오류"
-        ) {
-            if (it != null) {
+        ) { message ->
+            if (message != null) {
                 Text(
-                    text = it,
-                    modifier = Modifier.padding(start = 4.dp, top = 5.dp),
+                    text = message,
+                    modifier = Modifier.padding(start = 8.dp, top = 6.dp),
                     color = PlayColors.Red,
                     style = PlayType.m14
                 )
             }
-        }
-        if (imeAction == ImeAction.Done) {
-            Spacer(modifier = Modifier.size(1.dp).focusRequester(doneFocusRequester).focusable())
         }
     }
 }
