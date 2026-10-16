@@ -1,10 +1,5 @@
 package org.sopt.play.presentation
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,36 +19,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.sopt.play.presentation.util.isValidEmail
 import org.sopt.play.ui.component.PlayButton
 import org.sopt.play.ui.component.PlayTextField
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
-
-class RegisterActivity : ComponentActivity() {
-    companion object {
-        const val EXTRA_EMAIL = "org.sopt.play.presentation.EMAIL"
-        const val EXTRA_PASSWORD = "org.sopt.play.presentation.PASSWORD"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            PlaySoptTheme {
-                RegisterScreen(
-                    onRegisterClick = { email, password ->
-                        val result = Intent()
-                            .putExtra(EXTRA_EMAIL, email)
-                            .putExtra(EXTRA_PASSWORD, password)
-                        setResult(RESULT_OK, result)
-                        finish()
-                    }
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun RegisterScreen(
@@ -64,26 +35,32 @@ fun RegisterScreen(
     val emailState = rememberTextFieldState()
     val passwordState = rememberTextFieldState()
     val passwordConfirmState = rememberTextFieldState()
+
     val name = nameState.text.toString()
     val email = emailState.text.toString()
     val password = passwordState.text.toString()
     val passwordConfirm = passwordConfirmState.text.toString()
+
     val emailError = if (email.isNotEmpty() && !isValidEmail(email)) {
         "올바른 이메일을 입력해주세요."
     } else {
         null
     }
+
     val passwordError = if (password.isNotEmpty() && password.length < 6) {
         "비밀번호는 6자 이상 입력해주세요."
     } else {
         null
     }
+
     val confirmError = if (passwordConfirm.isNotEmpty() && passwordConfirm != password) {
         "비밀번호와 동일하게 입력해주세요."
     } else {
         null
     }
-    val canRegister = name.isNotBlank() && isValidEmail(email) &&
+
+    val canRegister = name.isNotBlank() &&
+        isValidEmail(email) &&
         password.length >= 6 &&
         passwordConfirm.isNotEmpty() &&
         passwordConfirm == password
@@ -149,7 +126,12 @@ fun RegisterScreen(
 
         PlayButton(
             text = "회원가입",
-            onClick = { onRegisterClick(email, password) },
+            onClick = {
+                onRegisterClick(
+                    email,
+                    password
+                )
+            },
             enabled = canRegister
         )
     }
