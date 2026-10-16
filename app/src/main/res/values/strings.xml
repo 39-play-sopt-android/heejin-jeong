@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Play Sopt</string>
+    <string name="home_title">PLAY SOPT</string>
+    <string name="home_discount_rate">%1$d%%</string>
+    <string name="home_recommendation_title">정희진님을 위한 추천 아이템</string>
+    <string name="home_search_description">검색</string>
+    <string name="home_favorite_selected_description">좋아요 선택됨</string>
+    <string name="home_favorite_unselected_description">좋아요 선택 안 됨</string>
 </resources>
