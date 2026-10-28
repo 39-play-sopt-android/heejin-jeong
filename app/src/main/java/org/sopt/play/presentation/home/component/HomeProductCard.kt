@@ -1,4 +1,4 @@
-package org.sopt.play.ui.component
+package org.sopt.play.presentation.home.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,7 +27,7 @@ import java.text.NumberFormat
 import java.util.Locale
 import org.sopt.play.R
 import org.sopt.play.presentation.home.HomeData
-import org.sopt.play.presentation.home.HomeProduct
+import org.sopt.play.ui.model.HomeProduct
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
@@ -47,7 +47,7 @@ fun HomeProductCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(176f / 220f)
+                .aspectRatio(160f / 200f)
         ) {
             Image(
                 painter = painterResource(product.imageRes),
@@ -58,11 +58,7 @@ fun HomeProductCard(
 
             Icon(
                 painter = painterResource(
-                    if (product.isFavorite) {
-                        R.drawable.ic_favorite_filled
-                    } else {
-                        R.drawable.ic_favorite_outline
-                    }
+                    if (product.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outline
                 ),
                 contentDescription = stringResource(
                     if (product.isFavorite) {
@@ -110,10 +106,7 @@ fun HomeProductCard(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = stringResource(
-                        id = R.string.home_discount_rate,
-                        formatArgs = arrayOf(product.discountRate)
-                    ),
+                    text = stringResource(R.string.home_discount_rate, product.discountRate),
                     style = PlayType.m14,
                     color = PlayColors.Red,
                     maxLines = 1

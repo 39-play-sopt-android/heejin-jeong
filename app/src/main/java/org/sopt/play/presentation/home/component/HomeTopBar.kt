@@ -1,7 +1,6 @@
-package org.sopt.play.ui.component
+package org.sopt.play.presentation.home.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +18,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.R
+import org.sopt.play.ui.modifier.noRippleClickable
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
@@ -49,9 +49,7 @@ fun HomeTopBar(
         Box(
             modifier = Modifier
                 .size(48.dp)
-                .clickable(
-                    interactionSource = null,
-                    indication = null,
+                .noRippleClickable(
                     role = Role.Button,
                     onClick = onSearchClick
                 ),

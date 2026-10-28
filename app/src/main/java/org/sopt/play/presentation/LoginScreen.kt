@@ -1,7 +1,6 @@
 package org.sopt.play.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.sopt.play.presentation.util.isValidEmail
 import org.sopt.play.ui.component.PlayButton
 import org.sopt.play.ui.component.PlayTextField
+import org.sopt.play.ui.modifier.noRippleClickable
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
@@ -122,9 +122,7 @@ fun LoginScreen(
 
             Text(
                 text = "회원가입하기",
-                modifier = Modifier.clickable(
-                    interactionSource = null,
-                    indication = null,
+                modifier = Modifier.noRippleClickable(
                     role = Role.Button,
                     onClick = onRegisterClick
                 ),

@@ -1,4 +1,4 @@
-package org.sopt.play.ui.component
+package org.sopt.play.presentation.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.sopt.play.ui.modifier.noRippleSelectable
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
@@ -38,10 +38,8 @@ fun HomeCategoryChip(
                 color = if (selected) PlayColors.Gray5 else PlayColors.Gray2,
                 shape = shape
             )
-            .selectable(
+            .noRippleSelectable(
                 selected = selected,
-                interactionSource = null,
-                indication = null,
                 role = Role.RadioButton,
                 onClick = onClick
             )

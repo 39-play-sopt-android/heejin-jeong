@@ -29,11 +29,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.R
 import org.sopt.play.presentation.home.HomeData
-import org.sopt.play.ui.component.HomeBannerRow
-import org.sopt.play.ui.component.HomeCategoryChip
-import org.sopt.play.ui.component.HomeMenuItem
-import org.sopt.play.ui.component.HomeProductCard
-import org.sopt.play.ui.component.HomeTopBar
+import org.sopt.play.presentation.home.component.HomeBannerRow
+import org.sopt.play.presentation.home.component.HomeCategoryChip
+import org.sopt.play.presentation.home.component.HomeMenuItem
+import org.sopt.play.presentation.home.component.HomeProductCard
+import org.sopt.play.presentation.home.component.HomeTopBar
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType

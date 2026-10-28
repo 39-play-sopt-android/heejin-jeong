@@ -1,6 +1,7 @@
 package org.sopt.play.presentation.home
 
 import org.sopt.play.R
+import org.sopt.play.ui.model.HomeProduct
 
 object HomeData {
     val menus = listOf(
