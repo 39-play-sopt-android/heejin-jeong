@@ -9,12 +9,33 @@ import androidx.compose.ui.unit.sp
 import org.sopt.play.R
 
 private val Pretendard = FontFamily(
-    Font(R.font.pretendard_medium, FontWeight.Medium),
-    Font(R.font.pretendard_semibold, FontWeight.SemiBold),
-    Font(R.font.pretendard_bold, FontWeight.Bold)
+    Font(
+        resId = R.font.pretendard_regular,
+        weight = FontWeight.Normal
+    ),
+    Font(
+        resId = R.font.pretendard_medium,
+        weight = FontWeight.Medium
+    ),
+    Font(
+        resId = R.font.pretendard_semibold,
+        weight = FontWeight.SemiBold
+    ),
+    Font(
+        resId = R.font.pretendard_bold,
+        weight = FontWeight.Bold
+    )
 )
 
 object PlayType {
+    val r14 = TextStyle(
+        fontFamily = Pretendard,
+        fontSize = 14.sp,
+        lineHeight = 1.2.em,
+        letterSpacing = (-0.01).em,
+        fontWeight = FontWeight.Normal
+    )
+
     val b28 = TextStyle(
         fontFamily = Pretendard,
         fontSize = 28.sp,
@@ -22,6 +43,7 @@ object PlayType {
         letterSpacing = (-0.01).em,
         fontWeight = FontWeight.Bold
     )
+
     val m18 = TextStyle(
         fontFamily = Pretendard,
         fontSize = 18.sp,
@@ -29,6 +51,7 @@ object PlayType {
         letterSpacing = (-0.01).em,
         fontWeight = FontWeight.Medium
     )
+
     val sb16 = TextStyle(
         fontFamily = Pretendard,
         fontSize = 16.sp,
@@ -36,6 +59,7 @@ object PlayType {
         letterSpacing = (-0.01).em,
         fontWeight = FontWeight.SemiBold
     )
+
     val m14 = TextStyle(
         fontFamily = Pretendard,
         fontSize = 14.sp,
@@ -43,6 +67,7 @@ object PlayType {
         letterSpacing = (-0.01).em,
         fontWeight = FontWeight.Medium
     )
+
     val sb14 = TextStyle(
         fontFamily = Pretendard,
         fontSize = 14.sp,

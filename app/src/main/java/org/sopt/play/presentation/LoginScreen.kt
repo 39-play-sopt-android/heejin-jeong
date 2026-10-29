@@ -1,15 +1,6 @@
 package org.sopt.play.presentation
 
-import android.content.Intent
-import android.os.Bundle
-import android.util.Patterns
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,68 +22,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.sopt.play.MainActivity
+import org.sopt.play.presentation.util.isValidEmail
 import org.sopt.play.ui.component.PlayButton
 import org.sopt.play.ui.component.PlayTextField
+import org.sopt.play.ui.modifier.noRippleClickable
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
-
-class LoginActivity : ComponentActivity() {
-    private var registeredEmail: String? = null
-    private var registeredPassword: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
-        val registerLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == RESULT_OK) {
-                registeredEmail = result.data?.getStringExtra(RegisterActivity.EXTRA_EMAIL)
-                registeredPassword = result.data?.getStringExtra(RegisterActivity.EXTRA_PASSWORD)
-            }
-        }
-
-        setContent {
-            PlaySoptTheme {
-                LoginScreen(
-                    onRegisterClick = {
-                        registerLauncher.launch(
-                            Intent(
-                                this,
-                                RegisterActivity::class.java
-                            )
-                        )
-                    },
-                    onLoginClick = { email, password ->
-                        if (email == registeredEmail && password == registeredPassword) {
-                            startActivity(
-                                Intent(
-                                    this,
-                                    MainActivity::class.java
-                                ).apply {
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or
-                                        Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                }
-                            )
-                        } else {
-                            Toast.makeText(
-                                this,
-                                "이메일 또는 비밀번호가 올바르지 않아요.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                )
-            }
-        }
-    }
-}
-
-fun isValidEmail(email: String): Boolean =
-    email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
 @Composable
 fun LoginScreen(
@@ -102,18 +38,22 @@ fun LoginScreen(
 ) {
     val emailState = rememberTextFieldState()
     val passwordState = rememberTextFieldState()
+
     val email = emailState.text.toString()
     val password = passwordState.text.toString()
+
     val emailError = if (email.isNotEmpty() && !isValidEmail(email)) {
         "올바른 이메일을 입력해주세요."
     } else {
         null
     }
+
     val passwordError = if (password.isNotEmpty() && password.length < 6) {
         "비밀번호는 6자 이상 입력해주세요."
     } else {
         null
     }
+
     val canLogin = isValidEmail(email) && password.length >= 6
 
     Column(
@@ -159,7 +99,12 @@ fun LoginScreen(
 
         PlayButton(
             text = "로그인",
-            onClick = { onLoginClick(email, password) },
+            onClick = {
+                onLoginClick(
+                    email,
+                    password
+                )
+            },
             enabled = canLogin
         )
 
@@ -177,9 +122,7 @@ fun LoginScreen(
 
             Text(
                 text = "회원가입하기",
-                modifier = Modifier.clickable(
-                    interactionSource = null,
-                    indication = null,
+                modifier = Modifier.noRippleClickable(
                     role = Role.Button,
                     onClick = onRegisterClick
                 ),
