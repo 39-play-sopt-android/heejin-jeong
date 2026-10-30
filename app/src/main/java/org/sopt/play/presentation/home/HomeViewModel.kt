@@ -28,4 +28,17 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    fun onFavoriteClick(productId: Int) {
+        _uiState.update { state ->
+            state.copy(
+                products = state.products.map { product ->
+                    if (product.id == productId) {
+                        product.copy(isFavorite = !product.isFavorite)
+                    } else {
+                        product
+                    }
+                }
+            )
+        }
+    }
 }

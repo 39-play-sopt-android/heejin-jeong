@@ -23,6 +23,7 @@ fun HomeRoute(
         uiState = uiState,
         onMenuClick = viewModel::onMenuClick,
         onCategoryClick = viewModel::onCategoryClick,
+        onFavoriteClick = viewModel::onFavoriteClick,
         modifier = modifier
     )
 }

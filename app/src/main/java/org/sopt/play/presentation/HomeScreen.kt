@@ -40,6 +40,7 @@ fun HomeScreen(
     uiState: HomeUiState,
     onMenuClick: (Int) -> Unit,
     onCategoryClick: (Int) -> Unit,
+    onFavoriteClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val productRows = remember(uiState.products) { uiState.products.chunked(2) }
@@ -116,7 +117,7 @@ fun HomeScreen(
 
             itemsIndexed(
                 items = productRows,
-                key = { _, products -> products.first().imageRes }
+                key = { _, products -> products.first().id }
             ) { index, products ->
                 Row(
                     modifier = Modifier
@@ -127,6 +128,7 @@ fun HomeScreen(
                     products.forEach { product ->
                         HomeProductCard(
                             product = product,
+                            onFavoriteClick = { onFavoriteClick(product.id) },
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -158,7 +160,8 @@ private fun HomeScreenPreview() {
         HomeScreen(
             uiState = HomeUiState(products = HomeData.products),
             onMenuClick = {},
-            onCategoryClick = {}
+            onCategoryClick = {},
+            onFavoriteClick = {}
         )
     }
 }
