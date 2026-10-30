@@ -3,6 +3,7 @@ package org.sopt.play.ui.model
 import androidx.annotation.DrawableRes
 
 data class HomeProduct(
+    val id: Int,
     @param:DrawableRes
     @get:DrawableRes
     val imageRes: Int,
