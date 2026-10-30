@@ -1,33 +1,41 @@
 package org.sopt.play.presentation.login
 
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
-import org.sopt.play.presentation.util.isValidEmail
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import org.sopt.play.data.AuthRepository
 
 class LoginViewModel : ViewModel() {
-    val emailState = TextFieldState()
-    val passwordState = TextFieldState()
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState = _uiState.asStateFlow()
 
-    val emailError: String?
-        get() {
-            val email = emailState.text.toString()
-            return if (email.isNotEmpty() && !isValidEmail(email)) {
-                "올바른 이메일을 입력해주세요."
-            } else {
-                null
-            }
+    fun onLoginClick() {
+        val state = _uiState.value
+        if (!state.canLogin || state.isLoginSuccessful) return
+
+        val isLoginSuccessful = AuthRepository.login(
+            email = state.emailState.text.toString(),
+            password = state.passwordState.text.toString()
+        )
+
+        _uiState.update {
+            it.copy(
+                isLoginSuccessful = isLoginSuccessful,
+                loginError = if (isLoginSuccessful) null else "이메일 또는 비밀번호가 올바르지 않아요."
+            )
         }
+    }
 
-    val passwordError: String?
-        get() {
-            val password = passwordState.text
-            return if (password.isNotEmpty() && password.length < 6) {
-                "비밀번호는 6자 이상 입력해주세요."
-            } else {
-                null
-            }
+    fun onLoginSuccessHandled() {
+        _uiState.update {
+            it.copy(isLoginSuccessful = false)
         }
+    }
 
-    val canLogin: Boolean
-        get() = isValidEmail(emailState.text.toString()) && passwordState.text.length >= 6
+    fun onLoginErrorShown() {
+        _uiState.update {
+            it.copy(loginError = null)
+        }
+    }
 }

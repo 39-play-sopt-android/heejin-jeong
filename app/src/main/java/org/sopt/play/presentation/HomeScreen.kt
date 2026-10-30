@@ -25,26 +25,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.R
 import org.sopt.play.presentation.home.HomeData
+import org.sopt.play.presentation.home.HomeUiState
 import org.sopt.play.presentation.home.component.HomeBannerRow
 import org.sopt.play.presentation.home.component.HomeCategoryChip
 import org.sopt.play.presentation.home.component.HomeMenuItem
 import org.sopt.play.presentation.home.component.HomeProductCard
 import org.sopt.play.presentation.home.component.HomeTopBar
-import org.sopt.play.ui.model.HomeProduct
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
 
 @Composable
 fun HomeScreen(
-    selectedMenuIndex: Int,
-    selectedCategoryIndex: Int,
-    products: List<HomeProduct>,
+    uiState: HomeUiState,
     onMenuClick: (Int) -> Unit,
     onCategoryClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val productRows = remember(products) { products.chunked(2) }
+    val productRows = remember(uiState.products) { uiState.products.chunked(2) }
 
     Column(
         modifier = modifier
@@ -70,7 +68,7 @@ fun HomeScreen(
                     HomeData.menus.forEachIndexed { index, menu ->
                         HomeMenuItem(
                             text = menu,
-                            selected = index == selectedMenuIndex,
+                            selected = index == uiState.selectedMenuIndex,
                             onClick = { onMenuClick(index) }
                         )
                     }
@@ -107,7 +105,7 @@ fun HomeScreen(
                     HomeData.categories.forEachIndexed { index, category ->
                         HomeCategoryChip(
                             text = category,
-                            selected = index == selectedCategoryIndex,
+                            selected = index == uiState.selectedCategoryIndex,
                             onClick = { onCategoryClick(index) }
                         )
                     }
@@ -158,9 +156,7 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     PlaySoptTheme {
         HomeScreen(
-            selectedMenuIndex = 1,
-            selectedCategoryIndex = 0,
-            products = HomeData.products,
+            uiState = HomeUiState(products = HomeData.products),
             onMenuClick = {},
             onCategoryClick = {}
         )

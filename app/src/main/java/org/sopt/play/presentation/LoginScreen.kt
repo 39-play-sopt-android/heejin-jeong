@@ -11,11 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
@@ -23,6 +22,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.sopt.play.presentation.login.LoginUiState
 import org.sopt.play.ui.component.PlayButton
 import org.sopt.play.ui.component.PlayTextField
 import org.sopt.play.ui.modifier.noRippleClickable
@@ -32,11 +32,7 @@ import org.sopt.play.ui.theme.PlayType
 
 @Composable
 fun LoginScreen(
-    emailState: TextFieldState,
-    passwordState: TextFieldState,
-    emailError: String?,
-    passwordError: String?,
-    canLogin: Boolean,
+    uiState: LoginUiState,
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -63,9 +59,9 @@ fun LoginScreen(
 
         PlayTextField(
             title = "이메일 주소",
-            state = emailState,
+            state = uiState.emailState,
             placeholder = "abc@email.com",
-            errorMessage = emailError,
+            errorMessage = uiState.emailError,
             keyboardType = KeyboardType.Email
         )
 
@@ -73,9 +69,9 @@ fun LoginScreen(
 
         PlayTextField(
             title = "비밀번호",
-            state = passwordState,
+            state = uiState.passwordState,
             placeholder = "6자 이상의 비밀번호",
-            errorMessage = passwordError,
+            errorMessage = uiState.passwordError,
             isPassword = true,
             imeAction = ImeAction.Done
         )
@@ -85,7 +81,7 @@ fun LoginScreen(
         PlayButton(
             text = "로그인",
             onClick = onLoginClick,
-            enabled = canLogin
+            enabled = uiState.canLogin
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -120,13 +116,11 @@ fun LoginScreen(
 )
 @Composable
 private fun LoginScreenPreview() {
+    val uiState = remember { LoginUiState() }
+
     PlaySoptTheme {
         LoginScreen(
-            emailState = rememberTextFieldState(),
-            passwordState = rememberTextFieldState(),
-            emailError = null,
-            passwordError = null,
-            canLogin = false,
+            uiState = uiState,
             onRegisterClick = {},
             onLoginClick = {}
         )

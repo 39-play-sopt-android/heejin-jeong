@@ -1,49 +1,31 @@
 package org.sopt.play.presentation.register
 
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
-import org.sopt.play.presentation.util.isValidEmail
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import org.sopt.play.data.AuthRepository
 
 class RegisterViewModel : ViewModel() {
-    val nameState = TextFieldState()
-    val emailState = TextFieldState()
-    val passwordState = TextFieldState()
-    val passwordConfirmState = TextFieldState()
+    private val _uiState = MutableStateFlow(RegisterUiState())
+    val uiState = _uiState.asStateFlow()
 
-    val emailError: String?
-        get() {
-            val email = emailState.text.toString()
-            return if (email.isNotEmpty() && !isValidEmail(email)) {
-                "올바른 이메일을 입력해주세요."
-            } else {
-                null
-            }
+    fun onRegisterClick() {
+        val state = _uiState.value
+        if (!state.canRegister || state.isRegistered) return
+
+        AuthRepository.register(
+            email = state.emailState.text.toString(),
+            password = state.passwordState.text.toString()
+        )
+        _uiState.update {
+            it.copy(isRegistered = true)
         }
+    }
 
-    val passwordError: String?
-        get() {
-            val password = passwordState.text
-            return if (password.isNotEmpty() && password.length < 6) {
-                "비밀번호는 6자 이상 입력해주세요."
-            } else {
-                null
-            }
+    fun onRegisterSuccessHandled() {
+        _uiState.update {
+            it.copy(isRegistered = false)
         }
-
-    val confirmError: String?
-        get() {
-            val password = passwordState.text.toString()
-            val passwordConfirm = passwordConfirmState.text.toString()
-            return if (passwordConfirm.isNotEmpty() && passwordConfirm != password) {
-                "비밀번호와 동일하게 입력해주세요."
-            } else {
-                null
-            }
-        }
-
-    val canRegister: Boolean
-        get() = nameState.text.isNotBlank() &&
-            isValidEmail(emailState.text.toString()) &&
-            passwordState.text.length >= 6 &&
-            passwordConfirmState.text.toString() == passwordState.text.toString()
+    }
 }

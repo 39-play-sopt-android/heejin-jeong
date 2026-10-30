@@ -9,17 +9,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.sopt.play.presentation.register.RegisterUiState
 import org.sopt.play.ui.component.PlayButton
 import org.sopt.play.ui.component.PlayTextField
 import org.sopt.play.ui.theme.PlayColors
@@ -28,14 +28,7 @@ import org.sopt.play.ui.theme.PlayType
 
 @Composable
 fun RegisterScreen(
-    nameState: TextFieldState,
-    emailState: TextFieldState,
-    passwordState: TextFieldState,
-    passwordConfirmState: TextFieldState,
-    emailError: String?,
-    passwordError: String?,
-    confirmError: String?,
-    canRegister: Boolean,
+    uiState: RegisterUiState,
     onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -61,7 +54,7 @@ fun RegisterScreen(
 
         PlayTextField(
             title = "이름",
-            state = nameState,
+            state = uiState.nameState,
             placeholder = "홍길동"
         )
 
@@ -69,9 +62,9 @@ fun RegisterScreen(
 
         PlayTextField(
             title = "이메일 주소",
-            state = emailState,
+            state = uiState.emailState,
             placeholder = "abc@email.com",
-            errorMessage = emailError,
+            errorMessage = uiState.emailError,
             keyboardType = KeyboardType.Email
         )
 
@@ -79,9 +72,9 @@ fun RegisterScreen(
 
         PlayTextField(
             title = "비밀번호",
-            state = passwordState,
+            state = uiState.passwordState,
             placeholder = "6자 이상의 비밀번호",
-            errorMessage = passwordError,
+            errorMessage = uiState.passwordError,
             isPassword = true
         )
 
@@ -89,9 +82,9 @@ fun RegisterScreen(
 
         PlayTextField(
             title = "비밀번호 확인",
-            state = passwordConfirmState,
+            state = uiState.passwordConfirmState,
             placeholder = "6자 이상의 비밀번호",
-            errorMessage = confirmError,
+            errorMessage = uiState.confirmError,
             isPassword = true,
             imeAction = ImeAction.Done
         )
@@ -101,7 +94,7 @@ fun RegisterScreen(
         PlayButton(
             text = "회원가입",
             onClick = onRegisterClick,
-            enabled = canRegister
+            enabled = uiState.canRegister
         )
     }
 }
@@ -113,16 +106,11 @@ fun RegisterScreen(
 )
 @Composable
 private fun RegisterScreenPreview() {
+    val uiState = remember { RegisterUiState() }
+
     PlaySoptTheme {
         RegisterScreen(
-            nameState = rememberTextFieldState(),
-            emailState = rememberTextFieldState(),
-            passwordState = rememberTextFieldState(),
-            passwordConfirmState = rememberTextFieldState(),
-            emailError = null,
-            passwordError = null,
-            confirmError = null,
-            canRegister = false,
+            uiState = uiState,
             onRegisterClick = {}
         )
     }
