@@ -18,11 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,17 +30,21 @@ import org.sopt.play.presentation.home.component.HomeCategoryChip
 import org.sopt.play.presentation.home.component.HomeMenuItem
 import org.sopt.play.presentation.home.component.HomeProductCard
 import org.sopt.play.presentation.home.component.HomeTopBar
+import org.sopt.play.ui.model.HomeProduct
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
 
 @Composable
 fun HomeScreen(
+    selectedMenuIndex: Int,
+    selectedCategoryIndex: Int,
+    products: List<HomeProduct>,
+    onMenuClick: (Int) -> Unit,
+    onCategoryClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var selectedMenuIndex by rememberSaveable { mutableIntStateOf(1) }
-    var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
-    val productRows = remember { HomeData.products.chunked(2) }
+    val productRows = remember(products) { products.chunked(2) }
 
     Column(
         modifier = modifier
@@ -71,7 +71,7 @@ fun HomeScreen(
                         HomeMenuItem(
                             text = menu,
                             selected = index == selectedMenuIndex,
-                            onClick = { selectedMenuIndex = index }
+                            onClick = { onMenuClick(index) }
                         )
                     }
                 }
@@ -108,7 +108,7 @@ fun HomeScreen(
                         HomeCategoryChip(
                             text = category,
                             selected = index == selectedCategoryIndex,
-                            onClick = { selectedCategoryIndex = index }
+                            onClick = { onCategoryClick(index) }
                         )
                     }
                 }
@@ -157,6 +157,12 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenPreview() {
     PlaySoptTheme {
-        HomeScreen()
+        HomeScreen(
+            selectedMenuIndex = 1,
+            selectedCategoryIndex = 0,
+            products = HomeData.products,
+            onMenuClick = {},
+            onCategoryClick = {}
+        )
     }
 }

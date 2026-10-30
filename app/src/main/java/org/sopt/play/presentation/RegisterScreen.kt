@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -19,7 +20,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.sopt.play.presentation.util.isValidEmail
 import org.sopt.play.ui.component.PlayButton
 import org.sopt.play.ui.component.PlayTextField
 import org.sopt.play.ui.theme.PlayColors
@@ -28,43 +28,17 @@ import org.sopt.play.ui.theme.PlayType
 
 @Composable
 fun RegisterScreen(
-    onRegisterClick: (String, String) -> Unit,
+    nameState: TextFieldState,
+    emailState: TextFieldState,
+    passwordState: TextFieldState,
+    passwordConfirmState: TextFieldState,
+    emailError: String?,
+    passwordError: String?,
+    confirmError: String?,
+    canRegister: Boolean,
+    onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val nameState = rememberTextFieldState()
-    val emailState = rememberTextFieldState()
-    val passwordState = rememberTextFieldState()
-    val passwordConfirmState = rememberTextFieldState()
-
-    val name = nameState.text.toString()
-    val email = emailState.text.toString()
-    val password = passwordState.text.toString()
-    val passwordConfirm = passwordConfirmState.text.toString()
-
-    val emailError = if (email.isNotEmpty() && !isValidEmail(email)) {
-        "올바른 이메일을 입력해주세요."
-    } else {
-        null
-    }
-
-    val passwordError = if (password.isNotEmpty() && password.length < 6) {
-        "비밀번호는 6자 이상 입력해주세요."
-    } else {
-        null
-    }
-
-    val confirmError = if (passwordConfirm.isNotEmpty() && passwordConfirm != password) {
-        "비밀번호와 동일하게 입력해주세요."
-    } else {
-        null
-    }
-
-    val canRegister = name.isNotBlank() &&
-        isValidEmail(email) &&
-        password.length >= 6 &&
-        passwordConfirm.isNotEmpty() &&
-        passwordConfirm == password
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -126,12 +100,7 @@ fun RegisterScreen(
 
         PlayButton(
             text = "회원가입",
-            onClick = {
-                onRegisterClick(
-                    email,
-                    password
-                )
-            },
+            onClick = onRegisterClick,
             enabled = canRegister
         )
     }
@@ -146,7 +115,15 @@ fun RegisterScreen(
 private fun RegisterScreenPreview() {
     PlaySoptTheme {
         RegisterScreen(
-            onRegisterClick = { _, _ -> }
+            nameState = rememberTextFieldState(),
+            emailState = rememberTextFieldState(),
+            passwordState = rememberTextFieldState(),
+            passwordConfirmState = rememberTextFieldState(),
+            emailError = null,
+            passwordError = null,
+            confirmError = null,
+            canRegister = false,
+            onRegisterClick = {}
         )
     }
 }

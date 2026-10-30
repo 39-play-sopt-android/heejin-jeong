@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -22,7 +23,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.sopt.play.presentation.util.isValidEmail
 import org.sopt.play.ui.component.PlayButton
 import org.sopt.play.ui.component.PlayTextField
 import org.sopt.play.ui.modifier.noRippleClickable
@@ -32,30 +32,15 @@ import org.sopt.play.ui.theme.PlayType
 
 @Composable
 fun LoginScreen(
+    emailState: TextFieldState,
+    passwordState: TextFieldState,
+    emailError: String?,
+    passwordError: String?,
+    canLogin: Boolean,
     onRegisterClick: () -> Unit,
-    onLoginClick: (String, String) -> Unit,
+    onLoginClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val emailState = rememberTextFieldState()
-    val passwordState = rememberTextFieldState()
-
-    val email = emailState.text.toString()
-    val password = passwordState.text.toString()
-
-    val emailError = if (email.isNotEmpty() && !isValidEmail(email)) {
-        "올바른 이메일을 입력해주세요."
-    } else {
-        null
-    }
-
-    val passwordError = if (password.isNotEmpty() && password.length < 6) {
-        "비밀번호는 6자 이상 입력해주세요."
-    } else {
-        null
-    }
-
-    val canLogin = isValidEmail(email) && password.length >= 6
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -99,12 +84,7 @@ fun LoginScreen(
 
         PlayButton(
             text = "로그인",
-            onClick = {
-                onLoginClick(
-                    email,
-                    password
-                )
-            },
+            onClick = onLoginClick,
             enabled = canLogin
         )
 
@@ -142,8 +122,13 @@ fun LoginScreen(
 private fun LoginScreenPreview() {
     PlaySoptTheme {
         LoginScreen(
+            emailState = rememberTextFieldState(),
+            passwordState = rememberTextFieldState(),
+            emailError = null,
+            passwordError = null,
+            canLogin = false,
             onRegisterClick = {},
-            onLoginClick = { _, _ -> }
+            onLoginClick = {}
         )
     }
 }
