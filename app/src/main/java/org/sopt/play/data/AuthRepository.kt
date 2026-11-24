@@ -1,8 +1,6 @@
-package org.sopt.play.presentation
+package org.sopt.play.data
 
-import androidx.lifecycle.ViewModel
-
-class AuthViewModel : ViewModel() {
+object AuthRepository {
     private var registeredEmail: String? = null
     private var registeredPassword: String? = null
 
@@ -14,7 +12,7 @@ class AuthViewModel : ViewModel() {
         registeredPassword = password
     }
 
-    fun canLogin(
+    fun login(
         email: String,
         password: String
     ): Boolean = email == registeredEmail && password == registeredPassword

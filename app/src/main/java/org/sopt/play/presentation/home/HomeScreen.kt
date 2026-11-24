@@ -1,4 +1,4 @@
-package org.sopt.play.presentation
+package org.sopt.play.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -18,17 +18,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.play.R
-import org.sopt.play.presentation.home.HomeData
 import org.sopt.play.presentation.home.component.HomeBannerRow
 import org.sopt.play.presentation.home.component.HomeCategoryChip
 import org.sopt.play.presentation.home.component.HomeMenuItem
@@ -39,12 +38,34 @@ import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
 
 @Composable
-fun HomeScreen(
+fun HomeRoute(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadHomeData()
+    }
+
+    HomeScreen(
+        uiState = uiState,
+        onMenuClick = viewModel::onMenuClick,
+        onCategoryClick = viewModel::onCategoryClick,
+        onFavoriteClick = viewModel::onFavoriteClick,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun HomeScreen(
+    uiState: HomeUiState,
+    onMenuClick: (Int) -> Unit,
+    onCategoryClick: (Int) -> Unit,
+    onFavoriteClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var selectedMenuIndex by rememberSaveable { mutableIntStateOf(1) }
-    var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(0) }
-    val productRows = remember { HomeData.products.chunked(2) }
+    val productRows = remember(uiState.products) { uiState.products.chunked(2) }
 
     Column(
         modifier = modifier
@@ -67,18 +88,18 @@ fun HomeScreen(
                         .horizontalScroll(rememberScrollState())
                         .selectableGroup()
                 ) {
-                    HomeData.menus.forEachIndexed { index, menu ->
+                    uiState.menus.forEachIndexed { index, menu ->
                         HomeMenuItem(
                             text = menu,
-                            selected = index == selectedMenuIndex,
-                            onClick = { selectedMenuIndex = index }
+                            selected = index == uiState.selectedMenuIndex,
+                            onClick = { onMenuClick(index) }
                         )
                     }
                 }
             }
 
             item(key = "banners") {
-                HomeBannerRow(banners = HomeData.banners)
+                HomeBannerRow(banners = uiState.banners)
             }
 
             item(key = "recommendation_title") {
@@ -104,11 +125,11 @@ fun HomeScreen(
                         .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    HomeData.categories.forEachIndexed { index, category ->
+                    uiState.categories.forEachIndexed { index, category ->
                         HomeCategoryChip(
                             text = category,
-                            selected = index == selectedCategoryIndex,
-                            onClick = { selectedCategoryIndex = index }
+                            selected = index == uiState.selectedCategoryIndex,
+                            onClick = { onCategoryClick(index) }
                         )
                     }
                 }
@@ -118,7 +139,7 @@ fun HomeScreen(
 
             itemsIndexed(
                 items = productRows,
-                key = { _, products -> products.first().imageRes }
+                key = { _, products -> products.first().id }
             ) { index, products ->
                 Row(
                     modifier = Modifier
@@ -129,6 +150,7 @@ fun HomeScreen(
                     products.forEach { product ->
                         HomeProductCard(
                             product = product,
+                            onFavoriteClick = { onFavoriteClick(product.id) },
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -157,6 +179,16 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenPreview() {
     PlaySoptTheme {
-        HomeScreen()
+        HomeScreen(
+            uiState = HomeUiState(
+                menus = HomeData.menus,
+                banners = HomeData.banners,
+                categories = HomeData.categories,
+                products = HomeData.products
+            ),
+            onMenuClick = {},
+            onCategoryClick = {},
+            onFavoriteClick = {}
+        )
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import java.util.Locale
 import org.sopt.play.R
 import org.sopt.play.presentation.home.HomeData
 import org.sopt.play.ui.model.HomeProduct
+import org.sopt.play.ui.modifier.noRippleClickable
 import org.sopt.play.ui.theme.PlayColors
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.PlayType
@@ -35,6 +37,7 @@ import org.sopt.play.ui.theme.PlayType
 @Composable
 fun HomeProductCard(
     product: HomeProduct,
+    onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val price = remember(product.price) {
@@ -56,23 +59,33 @@ fun HomeProductCard(
                 modifier = Modifier.fillMaxSize()
             )
 
-            Icon(
-                painter = painterResource(
-                    if (product.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outline
-                ),
-                contentDescription = stringResource(
-                    if (product.isFavorite) {
-                        R.string.home_favorite_selected_description
-                    } else {
-                        R.string.home_favorite_unselected_description
-                    }
-                ),
-                tint = if (product.isFavorite) PlayColors.Red else PlayColors.White,
+            Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(8.dp)
-                    .size(24.dp)
-            )
+                    .size(48.dp)
+                    .noRippleClickable(
+                        role = Role.Button,
+                        onClick = onFavoriteClick
+                    )
+            ) {
+                Icon(
+                    painter = painterResource(
+                        if (product.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outline
+                    ),
+                    contentDescription = stringResource(
+                        if (product.isFavorite) {
+                            R.string.home_favorite_selected_description
+                        } else {
+                            R.string.home_favorite_unselected_description
+                        }
+                    ),
+                    tint = if (product.isFavorite) PlayColors.Red else PlayColors.White,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(8.dp)
+                        .size(24.dp)
+                )
+            }
         }
 
         Column(
@@ -141,10 +154,12 @@ private fun HomeProductCardPreview() {
         ) {
             HomeProductCard(
                 product = HomeData.products[0],
+                onFavoriteClick = {},
                 modifier = Modifier.weight(1f)
             )
             HomeProductCard(
                 product = HomeData.products[1],
+                onFavoriteClick = {},
                 modifier = Modifier.weight(1f)
             )
         }
@@ -163,7 +178,8 @@ private fun HomeProductCardLongTextPreview() {
             product = HomeData.products[0].copy(
                 storeName = "한 줄을 넘는 길이의 스토어 이름",
                 name = "한 줄을 넘는 길이의 상품 이름을 말줄임으로 표시합니다"
-            )
+            ),
+            onFavoriteClick = {}
         )
     }
 }
