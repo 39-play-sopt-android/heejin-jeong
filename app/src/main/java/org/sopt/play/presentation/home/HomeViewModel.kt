@@ -9,10 +9,15 @@ class HomeViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun loadProducts() {
+    fun loadHomeData() {
         if (_uiState.value.products.isNotEmpty()) return
         _uiState.update {
-            it.copy(products = HomeData.products)
+            it.copy(
+                menus = HomeData.menus,
+                banners = HomeData.banners,
+                categories = HomeData.categories,
+                products = HomeData.products
+            )
         }
     }
 
