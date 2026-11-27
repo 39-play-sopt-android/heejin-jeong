@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import org.sopt.play.ui.modifier.noRippleClickable
@@ -21,11 +22,10 @@ fun PlayButton(
     text: String,
     onClick: () -> Unit,
     enabled: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = if (enabled) PlayColors.Black else PlayColors.Gray1,
+    textColor: Color = if (enabled) PlayColors.Gray1 else PlayColors.Gray3
 ) {
-    val backgroundColor = if (enabled) PlayColors.Black else PlayColors.Gray1
-    val textColor = if (enabled) PlayColors.Gray1 else PlayColors.Gray3
-
     Box(
         modifier = modifier
             .fillMaxWidth()

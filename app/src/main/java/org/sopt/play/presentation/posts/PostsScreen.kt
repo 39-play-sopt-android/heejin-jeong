@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,17 +59,29 @@ fun PostsRoute(viewModel: PostsViewModel = viewModel()) {
     }
     PostsScreen(
         posts = uiState.posts,
-        onCreate = viewModel::createPost
+        onCreate = viewModel::createPost,
+        onDelete = {}
     )
 }
 
 @Composable
 private fun PostsScreen(
     posts: List<PostDto>,
-    onCreate: (String, String) -> Unit
+    onCreate: (String, String) -> Unit,
+    onDelete: (Long) -> Unit
 ) {
+    var selectedPostId by rememberSaveable { mutableStateOf<Long?>(null) }
     var showWriter by rememberSaveable { mutableStateOf(false) }
 
+    selectedPostId?.let { id ->
+        DeletePostDialog(
+            onDismiss = { selectedPostId = null },
+            onConfirm = {
+                selectedPostId = null
+                onDelete(id)
+            }
+        )
+    }
     if (showWriter) {
         CreatePostSheet(
             onDismiss = { showWriter = false },
@@ -117,7 +130,7 @@ private fun PostsScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(posts, key = { it.id }) { post ->
-                    PostCard(post)
+                    PostCard(post, onLongClick = { selectedPostId = post.id })
                 }
             }
         }
@@ -142,11 +155,16 @@ private fun PostsScreen(
 }
 
 @Composable
-private fun PostCard(post: PostDto) {
+private fun PostCard(post: PostDto, onLongClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(PlayColors.Gray1, RoundedCornerShape(20.dp))
+            .combinedClickable(
+                onLongClickLabel = "게시글 삭제",
+                onLongClick = onLongClick,
+                onClick = {}
+            )
             .padding(20.dp)
     ) {
         Row(
@@ -175,6 +193,6 @@ private fun PostCard(post: PostDto) {
 @Composable
 private fun PostsScreenPreview() {
     PlaySoptTheme {
-        PostsScreen(emptyList(), onCreate = { _, _ -> })
+        PostsScreen(emptyList(), onCreate = { _, _ -> }, onDelete = {})
     }
 }
