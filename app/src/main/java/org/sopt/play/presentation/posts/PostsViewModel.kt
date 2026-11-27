@@ -39,6 +39,20 @@ class PostsViewModel : ViewModel() {
         }
     }
 
+    fun deletePost(postId: Long) {
+        viewModelScope.launch {
+            try {
+                RetrofitClient.postService.deletePost(postId, AuthRepository.getAuthorizationCode())
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _errors.send("게시글을 삭제하지 못했어요.")
+                return@launch
+            }
+            loadPosts()
+        }
+    }
+
     fun createPost(title: String, content: String) {
         viewModelScope.launch {
             val author = AuthRepository.registeredName

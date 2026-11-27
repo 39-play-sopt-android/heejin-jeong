@@ -60,7 +60,7 @@ fun PostsRoute(viewModel: PostsViewModel = viewModel()) {
     PostsScreen(
         posts = uiState.posts,
         onCreate = viewModel::createPost,
-        onDelete = {}
+        onDelete = viewModel::deletePost
     )
 }
 
