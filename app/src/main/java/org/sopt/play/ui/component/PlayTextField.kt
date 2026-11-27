@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicSecureTextField
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldDecorator
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
@@ -57,7 +58,9 @@ fun PlayTextField(
     errorMessage: String? = null,
     isPassword: Boolean = false,
     imeAction: ImeAction = ImeAction.Next,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    inputTransformation: InputTransformation? = null,
+    lineLimits: TextFieldLineLimits = TextFieldLineLimits.SingleLine
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -161,7 +164,8 @@ fun PlayTextField(
                 ),
                 keyboardOptions = keyboardOptions,
                 onKeyboardAction = { onKeyboardAction() },
-                lineLimits = TextFieldLineLimits.SingleLine,
+                lineLimits = lineLimits,
+                inputTransformation = inputTransformation,
                 interactionSource = interactionSource,
                 cursorBrush = cursorBrush,
                 decorator = decorator

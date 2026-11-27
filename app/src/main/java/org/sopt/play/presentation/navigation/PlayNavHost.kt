@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.sopt.play.presentation.home.HomeRoute
 import org.sopt.play.presentation.login.LoginRoute
+import org.sopt.play.presentation.posts.PostsRoute
 import org.sopt.play.presentation.register.RegisterRoute
 
 @Composable
@@ -58,7 +59,13 @@ fun PlayNavHost(
         }
 
         composable<Route.Home> {
-            HomeRoute()
+            HomeRoute(onSearchClick = {
+                navController.navigate(Route.Posts) { launchSingleTop = true }
+            })
+        }
+
+        composable<Route.Posts> {
+            PostsRoute()
         }
     }
 }
