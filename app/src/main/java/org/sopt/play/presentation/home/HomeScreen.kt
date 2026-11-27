@@ -39,6 +39,7 @@ import org.sopt.play.ui.theme.PlayType
 
 @Composable
 fun HomeRoute(
+    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel()
 ) {
@@ -49,6 +50,7 @@ fun HomeRoute(
     }
 
     HomeScreen(
+        onSearchClick = onSearchClick,
         uiState = uiState,
         onMenuClick = viewModel::onMenuClick,
         onCategoryClick = viewModel::onCategoryClick,
@@ -59,6 +61,7 @@ fun HomeRoute(
 
 @Composable
 private fun HomeScreen(
+    onSearchClick: () -> Unit,
     uiState: HomeUiState,
     onMenuClick: (Int) -> Unit,
     onCategoryClick: (Int) -> Unit,
@@ -73,7 +76,7 @@ private fun HomeScreen(
             .background(PlayColors.White)
             .safeDrawingPadding()
     ) {
-        HomeTopBar(onSearchClick = {})
+        HomeTopBar(onSearchClick = onSearchClick)
 
         LazyColumn(
             modifier = Modifier
@@ -180,6 +183,7 @@ private fun HomeScreen(
 private fun HomeScreenPreview() {
     PlaySoptTheme {
         HomeScreen(
+            onSearchClick = {},
             uiState = HomeUiState(
                 menus = HomeData.menus,
                 banners = HomeData.banners,
