@@ -6,4 +6,5 @@
     <string name="home_search_description">검색</string>
     <string name="home_favorite_selected_description">좋아요 선택됨</string>
     <string name="home_favorite_unselected_description">좋아요 선택 안 됨</string>
+    <string name="posts_search_hint">검색어를 입력하세요</string>
 </resources>
