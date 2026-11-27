@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -29,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.play.R
@@ -88,7 +91,7 @@ private fun PostsScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(posts, key = { it.id }) { post ->
-                    Text(text = post.title)
+                    PostCard(post)
                 }
             }
         }
@@ -108,6 +111,36 @@ private fun PostsScreen(
                 tint = PlayColors.White
             )
         }
+    }
+}
+
+@Composable
+private fun PostCard(post: PostDto) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(PlayColors.Gray1, RoundedCornerShape(20.dp))
+            .padding(20.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val metaStyle = PlayType.m14.copy(fontSize = 12.sp)
+            val displayDate = post.createdAt.substringBefore('T').replace('-', '.')
+            Text(post.author, style = metaStyle, color = PlayColors.Gray3)
+            Spacer(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(12.dp)
+                    .background(PlayColors.Gray3)
+            )
+            Text(text = displayDate, style = metaStyle, color = PlayColors.Gray3)
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(post.title, style = PlayType.m14.copy(fontSize = 16.sp), color = PlayColors.Gray5)
+        Spacer(Modifier.height(4.dp))
+        Text(post.content, style = PlayType.m14, color = PlayColors.Gray5)
     }
 }
 
