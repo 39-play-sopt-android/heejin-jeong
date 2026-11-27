@@ -24,18 +24,19 @@ class PostsViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            loadPosts()
+            loadPosts("게시글을 불러오지 못했어요.")
         }
     }
 
-    private suspend fun loadPosts() {
+    private suspend fun loadPosts(failureMessage: String) {
         try {
             val response = RetrofitClient.postService.getPosts()
             _uiState.value = PostsUiState(posts = response.data.posts)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.e("PostsViewModel", "게시글 목록 조회 실패", e)
+            Log.e("PostsViewModel", failureMessage, e)
+            _errors.send(failureMessage)
         }
     }
 
@@ -49,7 +50,7 @@ class PostsViewModel : ViewModel() {
                 _errors.send("게시글을 삭제하지 못했어요.")
                 return@launch
             }
-            loadPosts()
+            loadPosts("글은 삭제됐지만 목록을 새로고침하지 못했어요.")
         }
     }
 
@@ -71,7 +72,7 @@ class PostsViewModel : ViewModel() {
                 _errors.send("게시글을 작성하지 못했어요.")
                 return@launch
             }
-            loadPosts()
+            loadPosts("글은 작성됐지만 목록을 새로고침하지 못했어요.")
         }
     }
 }
