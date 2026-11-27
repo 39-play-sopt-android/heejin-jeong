@@ -15,6 +15,7 @@ class RegisterViewModel : ViewModel() {
         if (!state.canRegister || state.isRegistered) return
 
         AuthRepository.register(
+            name = state.nameState.text.toString(),
             email = state.emailState.text.toString(),
             password = state.passwordState.text.toString()
         )
